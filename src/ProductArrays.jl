@@ -36,8 +36,6 @@ Base.eltype(::Type{ProductArray{T,Eltype,N}}) where {T,Eltype,N} = Eltype
 Base.iterate(p::ProductArray) = iterate(p.prodIt)
 Base.iterate(p::ProductArray, state) = iterate(p.prodIt, state)
 
-Base.last(p::ProductArray) = last(p.prodIt)
-
 # implement private _getindex for ProductIterator
 
 index_dim(v) = index_dim(Base.IteratorSize(typeof(v)), v)
@@ -106,8 +104,8 @@ true
 """
 productArray(vectors...) = ProductArray(vectors)
 
-if VERSION < v"1.8" # compatibility
-    Base.lastindex(p::ProductArray) = length(p)
+if VERSION >= v"1.8" # compatibility
+    Base.last(p::ProductArray) = last(p.prodIt)
 end
 
 end
