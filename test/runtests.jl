@@ -1,7 +1,7 @@
 using ProductArrays
 using Test
 
-random_tuple(n) = map(x->abs(x)%floor(Int,10^(6/n)), map(rand, ntuple(x->Int, n)))
+random_tuple(n) = map(x->abs(x)%floor(Int,10^(6/n))+1, map(rand, ntuple(x->Int, n)))
 
 @testset "ProductArrays.jl" begin
     @testset "Ensure identical behavior to collected Base.product with v=$v" for v in [
