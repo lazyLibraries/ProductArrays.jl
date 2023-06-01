@@ -6,11 +6,11 @@ DocMeta.setdocmeta!(ProductArrays, :DocTestSetup, :(using ProductArrays); recurs
 makedocs(;
     modules=[ProductArrays],
     authors="Felix Benning <felix.benning@gmail.com> and contributors",
-    repo="https://github.com/Felix Benning/ProductArrays.jl/blob/{commit}{path}#{line}",
+    repo="https://github.com/lazyLibraries/ProductArrays.jl/blob/{commit}{path}#{line}",
     sitename="ProductArrays.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://Felix Benning.github.io/ProductArrays.jl",
+        canonical="https://lazyLibraries.github.io/ProductArrays.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -20,6 +20,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/Felix Benning/ProductArrays.jl",
+    repo="github.com/lazyLibraries/ProductArrays.jl",
     devbranch="main",
 )

@@ -4,7 +4,7 @@ CurrentModule = ProductArrays
 
 # ProductArrays
 
-Documentation for [ProductArrays](https://github.com/Felix Benning/ProductArrays.jl).
+Documentation for [ProductArrays](https://github.com/lazyLibraries/ProductArrays.jl).
 
 ```@index
 ```
