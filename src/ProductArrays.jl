@@ -77,7 +77,7 @@ collect(Iterators.product(vectors...))
 ```
 i.e. it is an AbstractArray in contrast to `Iterators.product(vectors...)`. So
 is accessible with `getindex` and gets default Array implementations for free.
-In particular it can be passed to `Base.PermutedDimsArray`` for lazy permutation
+In particular it can be passed to `Base.PermutedDimsArray` for lazy permutation
 and `vec()` to obtain a lazy `Base.ReshapedArray`.
 
 Examples:
@@ -106,7 +106,7 @@ true
 """
 productArray(vectors...) = ProductArray(vectors)
 
-if VERSION < 1.8 # compatibility
+if VERSION < v"1.8" # compatibility
     Base.lastindex(p::ProductArray) = length(p)
 end
 
