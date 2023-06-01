@@ -106,5 +106,8 @@ true
 """
 productArray(vectors...) = ProductArray(vectors)
 
+if VERSION < 1.8 # compatibility
+    Base.lastindex(p::ProductArray) = length(p)
+end
 
 end
