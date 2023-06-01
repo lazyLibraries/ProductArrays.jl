@@ -1,14 +1,17 @@
 using ProductArrays
 using Test
 
-@testset "ProductArrays.jl" begin
-    @testset "ProductArray identical to collected Base.product" begin
-		@test productArray(1:3, 4:10) == collect(Base.product(1:3, 4:10))
-		v1 = rand(3, 2)
-		v2 = [:a, :b]
-		@test productArray(v1, v2) == collect(Base.product(v1, v2))
+random_tuple(n) = map(x->abs(x)%floor(Int,10^(7/n)), map(rand, ntuple(x->Int, n)))
 
-		v = (v1, v2)
+@testset "ProductArrays.jl" begin
+    @testset "Ensure identical behavior to collected Base.product with v=$v" for v in [
+        (1:3, 4:10),
+        (rand(3,2),[:a,:b]),
+        map(x->rand(x), random_tuple(1)),
+        map(x->rand(x), random_tuple(2)),
+        map(x->rand(x), random_tuple(3)),
+        map(x->rand(x), random_tuple(4)),
+    ]
 		p = productArray(v...)
 
 		@testset "Test Type Functions" begin
