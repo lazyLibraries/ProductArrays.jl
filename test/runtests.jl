@@ -1,12 +1,12 @@
 using ProductArrays
 using Test
 
-random_tuple(n) = map(x->abs(x)%floor(Int,10^(7/n)), map(rand, ntuple(x->Int, n)))
+random_tuple(n) = map(x->abs(x)%floor(Int,10^(6/n)), map(rand, ntuple(x->Int, n)))
 
 @testset "ProductArrays.jl" begin
     @testset "Ensure identical behavior to collected Base.product with v=$v" for v in [
         (1:3, 4:10),
-        (rand(3,2),[:a,:b]),
+        (rand(3,2),(:a,:b)),
         map(x->rand(x), random_tuple(1)),
         map(x->rand(x), random_tuple(2)),
         map(x->rand(x), random_tuple(3)),
@@ -37,6 +37,7 @@ random_tuple(n) = map(x->abs(x)%floor(Int,10^(7/n)), map(rand, ntuple(x->Int, n)
 			@test size(p) == map(length, axes(p))
 			@test length(p) == reduce(*, size(p))
 			@test axes(p, 1) == axes(p)[1]
+            @test ndims(p) == ndims(c)
 		end
 	end
 end
