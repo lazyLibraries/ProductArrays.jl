@@ -37,4 +37,22 @@ julia> sizeof(A) == sizeof(1:3) + sizeof((:a,:b))
 true
 
 julia> A == collect(Iterators.product(1:3, (:a,:b)))
+true
 ```
+
+## Related Packages
+
+A list compiled by Alexander Plavin (@aplavin)
+
+### Packages focusing on grids/products specifically
+
+- [StructuredGrids.jl](https://github.com/haampie/StructuredGrids.jl) (the same promise but [fails on edge cases](https://github.com/haampie/StructuredGrids.jl/issues/2))
+- [LazyGrids.jl](https://github.com/JuliaArrays/LazyGrids.jl) (does something
+else: tuple of grids not grid of tuples)
+- [RectiGrids.jl](https://gitlab.com/aplavin/RectiGrids.jl) (focus on
+keyed/labeled arrays - fails on the same edge cases as `StructuredGrids.jl`)
+
+### Parts of other packages
+
+- [ProductView](https://github.com/JuliaData/SplitApplyCombine.jl#productviewf-a-b) of [SplitApplyCombine.jl](https://github.com/JuliaData/SplitApplyCombine.jl)
+- [[WIP] ProductedArrays JuliaArrays/MappedArrays.jl#42](https://github.com/JuliaArrays/MappedArrays.jl/pull/42)
