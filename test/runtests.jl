@@ -9,6 +9,7 @@ random_tuple(n) = map(x -> abs(x) % floor(Int, 10^(6 / n)) + 1, map(rand, ntuple
     @testset "Ensure identical behavior to collected Base.product" for v in [
         (1:3, 4:10),
         (rand(3, 2), (:a, :b)),
+        (1:2, "abc"),
         map(x -> rand(x), random_tuple(1)),
         map(x -> rand(x), random_tuple(2)),
         map(x -> rand(x), random_tuple(3)),
