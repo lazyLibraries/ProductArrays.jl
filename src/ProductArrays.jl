@@ -2,7 +2,7 @@ module ProductArrays
 
 export productArray
 
-function _ensure_all_linear_indexed(vecs::T) where {T<:Tuple}
+function _ensure_getindex(vecs::T) where {T<:Tuple}
     linear_indexed = ntuple(
         n -> hasmethod(Base.getindex, (fieldtype(T, n), Int)),
         Base._counttuple(T)
@@ -11,13 +11,35 @@ function _ensure_all_linear_indexed(vecs::T) where {T<:Tuple}
         "$(vecs[findfirst(x->!x, linear_indexed)]) cannot be linearly accessed. All inputs need to implement `Base.getindex(::T, ::Int)`"
     ))
 end
+function _has_shape(T::Type)
+    S = Base.IteratorSize(T)
+    return S isa Base.HasLength || S isa Base.HasShape || T isa AbstractArray || hasmethod(Base.ndims, (T,))
+end
+function _ensure_shape(::T) where {T<:Tuple}
+    all(ntuple(n -> _has_shape(fieldtype(T, n)), Base._counttuple(T))) || throw(ArgumentError(
+        "The input is not an AbstractArray, does not implement ndims and its IteratorSize is neither Base.HasLength nor Base.HasShape. So ProductArray cannot figure out its shape"
+    ))
+end
+
+index_dim(v) = index_dim(Base.IteratorSize(typeof(v)), v)
+index_dim(::Base.HasShape{N}, v) where {N} = N
+index_dim(::Base.HasLength, v) = 1
+index_dim(::ST, v::AbstractArray{T,N}) where {ST<:Union{Base.IsInfinite,Base.SizeUnknown},T,N} = N
+index_dim(::ST, v) where {ST<:Union{Base.IsInfinite,Base.SizeUnknown}} = ndim(v)
+
+_ndims(p::Iterators.ProductIterator{T}) where {T<:Tuple} = _ndims(Base.IteratorSize(Iterators.ProductIterator{T}), p)
+_ndims(::Base.HasLength, p::Iterators.ProductIterator) = ndims(p)
+_ndims(::Base.HasShape, p::Iterators.ProductIterator) = ndims(p)
+# Iterators.product is too conservative for ndims
+_ndims(_, p::Iterators.ProductIterator) = sum(v -> index_dim(v), p.iterators)
 
 struct ProductArray{T<:Tuple,Eltype,N} <: AbstractArray{Eltype,N}
     prodIt::Iterators.ProductIterator{T}
     ProductArray(t::T) where {T} = begin
-        _ensure_all_linear_indexed(t)
+        _ensure_getindex(t)
+        _ensure_shape(t)
         prodIt = Iterators.ProductIterator(t)
-        new{T,eltype(Iterators.ProductIterator{T}),ndims(prodIt)}(prodIt)
+        new{T,eltype(Iterators.ProductIterator{T}),_ndims(prodIt)}(prodIt)
     end
 end
 
@@ -38,17 +60,6 @@ Base.iterate(p::ProductArray, state) = iterate(p.prodIt, state)
 
 # implement private _getindex for ProductIterator
 
-index_dim(v) = index_dim(Base.IteratorSize(typeof(v)), v)
-index_dim(::Base.HasShape{N}, v) where {N} = N
-index_dim(::Base.HasLength, v) = 1
-index_dim(::ST, v::AbstractArray{T,N}) where {ST<:Union{Base.IsInfinite,Base.SizeUnknown},T,N} = N
-function index_dim(::T, v) where {T<:Union{Base.IsInfinite,Base.SizeUnknown}}
-    try
-        return ndim(v)
-    catch
-        throw(ArgumentError("ProductArray cannot deal with $(typeof(v)) as its IteratorSize is of type $T and it does not implement `ndim`."))
-    end
-end
 
 function _getindex(prod::Iterators.ProductIterator, indices::Int...)
     return _prod_getindex(prod.iterators, indices...)
